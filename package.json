@@ -1,0 +1,35 @@
+{
+  "name": "signery",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "verify": "node scripts/verify-signing.mjs",
+    "test:ui": "node tests/ui-test.mjs && node tests/app-test.mjs"
+  },
+  "dependencies": {
+    "@signpdf/placeholder-pdf-lib": "^3.3.0",
+    "@signpdf/signer-p12": "^3.3.0",
+    "@signpdf/signpdf": "^3.3.0",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.3",
+    "@tauri-apps/plugin-fs": "^2.5.2",
+    "@tauri-apps/plugin-opener": "^2",
+    "buffer": "^6.0.3",
+    "node-forge": "^1.4.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.3.289",
+    "signature_pad": "^5.1.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/node-forge": "^1.3.14",
+    "playwright": "^1.63.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  }
+}

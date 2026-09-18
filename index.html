@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/tauri.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signery</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <header id="toolbar">
+        <div class="toolbar-group">
+          <span id="brand">Signery</span>
+          <button id="btn-open" class="btn">Open PDF…</button>
+        </div>
+        <div class="toolbar-group" id="doc-tools" hidden>
+          <button id="btn-add-signature" class="btn">Add signature…</button>
+          <span id="doc-name" class="muted"></span>
+        </div>
+        <div class="toolbar-group">
+          <button id="btn-save" class="btn btn-primary" hidden>Sign &amp; save…</button>
+        </div>
+      </header>
+
+      <div id="tray" hidden>
+        <span class="muted">Your signatures — click one, then click on the document to place it:</span>
+        <div id="tray-items"></div>
+      </div>
+
+      <main id="viewer">
+        <div id="empty-state">
+          <h1>Sign PDFs locally.</h1>
+          <p>No servers, no accounts, no uploads. Open a PDF to get started.</p>
+          <button id="btn-open-empty" class="btn btn-primary">Open PDF…</button>
+        </div>
+        <div id="pages"></div>
+      </main>
+
+      <footer id="statusbar"><span id="status-text">Ready</span></footer>
+    </div>
+
+    <!-- Signature creation modal -->
+    <dialog id="sig-modal">
+      <h2>Add a signature</h2>
+      <div class="tabs">
+        <button class="tab active" data-tab="draw">Draw</button>
+        <button class="tab" data-tab="type">Type</button>
+        <button class="tab" data-tab="image">Image</button>
+      </div>
+
+      <div class="tab-panel" id="panel-draw">
+        <canvas id="draw-canvas" width="600" height="200"></canvas>
+        <div class="row">
+          <button id="btn-draw-clear" class="btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-type" hidden>
+        <input id="type-input" type="text" placeholder="Type your name" />
+        <div id="font-choices"></div>
+      </div>
+
+      <div class="tab-panel" id="panel-image" hidden>
+        <p class="muted">Choose an image of your signature (PNG with transparent background works best).</p>
+        <button id="btn-image-pick" class="btn">Choose image…</button>
+        <img id="image-preview" hidden alt="Signature preview" />
+      </div>
+
+      <div class="row modal-actions">
+        <button id="btn-sig-cancel" class="btn">Cancel</button>
+        <button id="btn-sig-use" class="btn btn-primary">Use signature</button>
+      </div>
+    </dialog>
+
+    <!-- Sign & save modal -->
+    <dialog id="save-modal">
+      <h2>Sign &amp; save</h2>
+      <p class="muted" id="save-summary"></p>
+
+      <label class="check">
+        <input type="checkbox" id="chk-digital" />
+        Also add a cryptographic digital signature (validates in PDF readers)
+      </label>
+
+      <div id="digital-options" hidden>
+        <div class="radio-group">
+          <label class="check">
+            <input type="radio" name="certsource" value="p12" checked />
+            Use my certificate (.p12 / .pfx)
+          </label>
+          <div class="indent" id="p12-options">
+            <button id="btn-pick-p12" class="btn">Choose certificate…</button>
+            <span id="p12-name" class="muted"></span>
+            <input id="p12-pass" type="password" placeholder="Certificate password" />
+          </div>
+          <label class="check">
+            <input type="radio" name="certsource" value="generate" />
+            Generate a self-signed certificate for me
+          </label>
+          <div class="indent" id="gen-options" hidden>
+            <input id="gen-name" type="text" placeholder="Full name" />
+            <input id="gen-email" type="email" placeholder="Email (optional)" />
+            <input id="gen-pass" type="password" placeholder="Password to protect the certificate" />
+            <label class="check">
+              <input type="checkbox" id="chk-save-p12" checked />
+              Save the certificate so I can reuse it (.p12)
+            </label>
+            <p class="muted small">
+              Self-signed certificates prove the document hasn't changed since signing, but readers
+              like Adobe will show "validity unknown" until the recipient trusts your certificate.
+            </p>
+          </div>
+        </div>
+        <input id="sign-reason" type="text" placeholder="Reason (optional, e.g. 'I approve this document')" />
+      </div>
+
+      <div class="row modal-actions">
+        <button id="btn-save-cancel" class="btn">Cancel</button>
+        <button id="btn-save-go" class="btn btn-primary">Save signed PDF…</button>
+      </div>
+    </dialog>
+  </body>
+</html>
