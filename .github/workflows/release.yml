@@ -1,0 +1,69 @@
+name: Release
+
+# Pushing a tag like v0.1.0 builds installers for each platform and attaches
+# them to a draft GitHub Release. Review the draft, then publish it.
+#
+# macOS is intentionally omitted for now; add a macos-latest matrix entry
+# (and signing/notarization secrets) when ready.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build installers (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            args: ""
+          - os: ubuntu-22.04
+            args: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Tauri system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - name: Build and upload installers
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Signery ${{ github.ref_name }}"
+          releaseBody: |
+            Download the installer for your platform below.
+
+            **Windows**: the installer is not code-signed yet, so SmartScreen
+            will warn about an unrecognized app — click "More info" → "Run anyway".
+
+            **Linux**: the AppImage runs anywhere (`chmod +x` it first);
+            .deb and .rpm packages are also provided.
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
