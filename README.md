@@ -6,6 +6,12 @@ Signery is a free, open source, cross-platform desktop app for signing PDF
 documents. Everything happens on your machine — your documents and your
 private keys never leave it.
 
+![Signing a document in Signery](images/main.png)
+
+| Draw, type, or upload | Optional digital signature | Dark mode |
+| --- | --- | --- |
+| ![Drawing a signature](images/draw-signature.png) | ![Sign & save options](images/sign-and-save.png) | ![Dark mode](images/dark-mode.png) |
+
 ## Features
 
 - **Visual signatures** — draw with your mouse/pen, type your name in a

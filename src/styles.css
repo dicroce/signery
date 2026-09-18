@@ -374,8 +374,12 @@ dialog h2 {
   align-items: flex-start;
 }
 
-.indent input {
+.indent input:not([type="checkbox"]) {
   width: 100%;
+}
+
+.indent .check {
+  align-self: stretch;
 }
 
 .radio-group {
